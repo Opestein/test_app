@@ -37,17 +37,19 @@ public class MainActivity extends FlutterActivity {
 
 
                             switch (methodCall.method) {
+//                                this is called first to get sdcard location
                                 case "takeCardUriPermission":
                                     takeCardUriPermission(methodCall.argument("storageType"));
                                     result.success(null);
 
                                     break;
                                 case "saveFile":
-
+//                          here, we get the path from the flutter side and write the
+//                          file to sdcard
                                     String filepath = (String) methodCall.argument("filepath");
 
                                     final byte[] bytes = methodCall.argument("bytes");
-                                    Log.e("save to path", filepath);
+//                                    Log.e("save to path", filepath);
 
 
                                     try {
@@ -74,12 +76,12 @@ public class MainActivity extends FlutterActivity {
 
                                         result.success(true);
                                     } catch (Exception e) {
-                                        Log.e("error res", e.getMessage());
+//                                        Log.e("error res", e.getMessage());
                                         result.error("400", e.getMessage(), e);
 
                                         return;
                                     }
-//                                    }
+//                                
                                     break;
                             }
 
@@ -99,22 +101,22 @@ public class MainActivity extends FlutterActivity {
                         .contains(storageType)) {
                     storageVolume = list.get(i);
                 }
-                Log.e("Path", list.get(i).getDescription(this));
+//                Log.e("Path", list.get(i).getDescription(this));
 
             }
             if (storageVolume != null) {
-                Log.e("sdCard", storageVolume.getDescription(this));
+//                Log.e("sdCard", storageVolume.getDescription(this));
                 Intent intent = storageVolume.createOpenDocumentTreeIntent();
                 try {
                     startActivityForResult(intent, 4010);
                 } catch (ActivityNotFoundException e) {
-                    Log.e("TUNE-IN ANDROID", "takeCardUriPermission: " + e);
+//                    Log.e("TUNE-IN ANDROID", "takeCardUriPermission: " + e);
                 }
             }
         }
     }
 
-
+    // this will pass the sdcard location to the flutter side
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -131,11 +133,13 @@ public class MainActivity extends FlutterActivity {
             getContentResolver().takePersistableUriPermission(uri, takeFlags);
 
             String path = getUri().toString();
-            Log.e("choosen", path);
+//            Log.e("choosen", path);
             methodChannel.invokeMethod("resolveWithSDCardUri", path);
         }
     }
 
+    //    this will always returns the choosen path, will be using this
+//    in the on onActivityResult method
     public Uri getUri() {
         List<UriPermission> persistedUriPermissions = getContentResolver().getPersistedUriPermissions();
         if (persistedUriPermissions.size() > 0) {

@@ -130,7 +130,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String value;
 
+  //this method is were you select a place/location to save the file
   choosePath() async {
+    //check for here if android version is greater than android Q,
+    // using this process, the minimum sdk is 29
     try {
       if (Platform.isAndroid) {
         Map<String, String> storageList = {
@@ -143,7 +146,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } on PlatformException catch (e) {}
   }
 
-  // this
+  // this method is where you pass the file you want to save
   Future<dynamic> saveFileToStorage(MethodCall methodCall) async {
     switch (methodCall.method) {
       case "resolveWithSDCardUri":
